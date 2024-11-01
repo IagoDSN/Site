@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script.Mize-Mayhem</title>
+    <style>
+        #gameArea {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        #character {
+            width: 175px;
+            height: 125px;
+            position: absolute;
+        }
+        #target {
+            position:absolute;
+            top: 700px; 
+            left: 1000px;
+            width: 50px;
+            height: 75px;
+        }
+        #messageBox {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fceb00;
+            border-radius: 10px;
+        }
+        #imagem {
+            display: none;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="changeImage()">Alterar Skin</button>
+    <button onclick="toggleImagem()">Clique aqui para ver o futuro</button>
+    <img id="imagem" src="henrricoso.jpeg" alt="Imagem">
+    <img id="gameArea" src="floresta.jpg" alt="Fundo da Floresta">
+    <img id="target" src="goblin.png" alt="npc">
+    <img id="character" src="dititivi.png" alt="Personagem">
+        <div id="messageBox">Você encontrou o alvo! Pressione a letra E para matá-lo</div>
+    </div>
+    <script>
+        const character = document.getElementById('character');
+        const target = document.getElementById('target');
+        const messageBox = document.getElementById('messageBox');
+        const step = 10;
+        const upperLimit = 600;
+
+        document.addEventListener('keydown', (event) => {
+            let top = parseInt(character.style.top) || 650;
+            let left = parseInt(character.style.left) || 200;
+
+            switch(event.key) {
+                case 'w':
+                if (top > upperLimit) top -= step;
+                    break;
+                case 'a':
+                    left -= step;
+                    break;
+                case 's':
+                    top += step;
+                    break;
+                case 'd':
+                    left += step;
+                    break;
+            }
+
+            character.style.top = `${top}px`;
+            character.style.left = `${left}px`;
+            
+
+            if (isColliding(character, target)) {
+                document.addEventListener('keydown', function(event) {
+            if (event.key === 'e') { 
+                const img = document.getElementById('target');
+                img.src = 'morto.png';
+                let imagem = document.getElementById('target');
+                imagem.style.width = '350px';
+                imagem.style.height = '250px';
+                imagem.style.top = '650px'; 
+                imagem.style.left = '850px';
+
+            }
+        });
+                messageBox.style.display = 'block';
+                setTimeout(() => {
+                    messageBox.style.display = 'none';
+                }, 5000);
+            }
+        });
+
+        function isColliding(el1, el2) {
+            const rect1 = el1.getBoundingClientRect();
+            const rect2 = el2.getBoundingClientRect();
+
+            return !(rect1.right < rect2.left || 
+                     rect1.left > rect2.right || 
+                     rect1.bottom < rect2.top || 
+                     rect1.top > rect2.bottom);
+        }
+    
+        function toggleImagem() {
+            var img = document.getElementById('imagem');
+            if (img.style.display === 'none') {
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+            }
+        }
+        let images = ["imagem1.png", "imagem2.png", "imagem3.png", "imagem4.png", "imagem5.png"];
+        let currentIndex = 0;
+
+        function changeImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            document.getElementById("character").src = images[currentIndex];
+        }
+    </script>
+</body>
+</html>
